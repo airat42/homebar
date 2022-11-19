@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <link type="text/css" href="{% static 'cocktails/css/style1.css' %}" rel="stylesheet">
+</head>
+<body>
+<div>
+    <div class="detail_cock"><h3 class="detail_cock_h3">{{ cocktail.name }}</h3>
+        <a class="rec_p" href="{% url 'index' %}">На главную</a>
+    <li>Вкус: {{ cocktail.taste }}</li>
+    <li>Тип: {{ cocktail.group }}</li>
+    <li>Крепость: {{ cocktail.alcohol }}</li>
+    <li class="cost">Стоимость: <b>{{ cocktail.cost }}</b></li>
+    <li class="rec">Состав: {% for i in cocktail.ingridients.all %}</li>
+        <li class="rec_p">{{ i }}</li>
+        {% endfor %}
+    <li class="comm"> {{ cocktail.comment }}</li>
+    </div>
+</div>
+</body>
+</html>

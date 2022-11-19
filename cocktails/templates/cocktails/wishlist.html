@@ -1,0 +1,18 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Правила Шлёппы</title>
+    <link type="text/css" href="{% static 'cocktails/css/style1.css' %}" rel="stylesheet">
+</head>
+<body>
+<div>
+<h1>Вишлист бара</h1>
+    <a class="rec_p" href="{% url 'index' %}">Назад</a>
+{% for i in wishlist.all %}
+    <li>{{ i }}</li>
+{% endfor %}
+</div>
+</body>
+</html>

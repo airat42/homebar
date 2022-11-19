@@ -1,0 +1,101 @@
+html, body {
+    padding: 0px;
+    color: #c7ab0a;
+    background: repeating-linear-gradient(45deg, #000000, #212121 10px, #0d0d0c 10px, #1f1e1c 20px);
+    font-family: Gill Sans;
+}
+h1 {
+    text-align: center;
+    font-size: 70px;
+    font-family: Marker Felt;
+}
+h3 {
+   font-style: italic;
+   text-align: center;
+   color: #c7ab0a;
+   font-size: 19px;
+}
+
+a {
+    color: #FFFFFF;
+    margin: 5px;
+    padding: 0px;
+}
+
+li {
+    line-height: 160%;
+}
+
+.flex {
+	display: flex;
+    width: 300px;
+	height: 1500px;
+    flex-flow: column wrap;
+    margin-top: -10px;
+    padding: 40px;
+}
+
+.clients {
+    color: #FFFFFF;
+    text-align: left;
+}
+
+.flex-itm {
+    margin: 15px;
+    padding: 15px;
+    width: 240px;
+	height: 190px;
+    font-size: 18px;
+    border: 3px solid #c7ab0a;
+    background: radial-gradient(circle at 65% 15%, #1c1c1c, #000000);
+    color: #FFFFFF;
+    margin-top: 20px;
+}
+
+.cost {
+    margin: 0px;
+    padding: 0px;
+    color: #f21818;
+}
+.detail_cock {
+    font-size: 20px;
+}
+
+.button {
+    border: 3px solid #c7ab0a;
+    text-align: center;
+    background: #c7ab0a;
+}
+
+.button:hover {
+    border: 3px solid #857209;
+    text-align: center;
+    background: #857209;
+}
+
+.detail_cock_h3 {
+    font-size: 40px;
+}
+
+.rec {
+    color: #c7ab0a;
+}
+
+.rec_p {
+    color: #FFFFFF;
+    margin: 5px;
+    padding: 0px;
+}
+
+.lenk {
+   color: #000000;
+   font-style: bold;
+}
+
+.comm {
+    font-size: 25px;
+}
+
+.rules {
+    font-size: 25px;
+}
