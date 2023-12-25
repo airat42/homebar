@@ -48,6 +48,7 @@ class Cocktail(models.Model):
     group = models.ForeignKey(Group, blank=True, on_delete=models.CASCADE)
     cost = models.IntegerField(default=1)
     comment = models.CharField(max_length=400, default='Это коктейль')
+    img = models.ImageField(upload_to='media/', default='media/default.jpg')
 
     def __str__(self):
         return self.name

@@ -7,9 +7,9 @@
     <link type="text/css" href="{% static 'cocktails/css/style1.css' %}" rel="stylesheet">
 </head>
 <body>
-<div>
     <div class="detail_cock"><h3 class="detail_cock_h3">{{ cocktail.name }}</h3>
         <a class="rec_p" href="{% url 'index' %}">На главную</a>
+        <p>
     <li>Вкус: {{ cocktail.taste }}</li>
     <li>Тип: {{ cocktail.group }}</li>
     <li>Крепость: {{ cocktail.alcohol }}</li>
@@ -17,8 +17,13 @@
     <li class="rec">Состав: {% for i in ingr_list %}</li>
         <li class="rec_p">{{ i.ingridient_id}}: {{ i.value }}</li>
         {% endfor %}
-    <li class="comm"> {{ cocktail.comment }}</li>
+
+   </div>
+    <div class="rightpic">
+        <img src="{{ cocktail.img.url }}" width="500" height="500">
     </div>
-</div>
+    <div class="comm">
+        <a> {{ cocktail.comment }}</a>
+    </div>
 </body>
 </html>

@@ -5,8 +5,8 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name',)
 
 class CocktailAdmin(admin.ModelAdmin):
-    list_display = ('name', 'cost', 'group')
-    list_editable = ('cost', 'group')
+    list_display = ('name', 'cost', 'group', 'img')
+    list_editable = ('cost', 'group', 'img')
 
 class IngridientdAdmin(admin.ModelAdmin):
     list_display = ('name', 'category', 'availability', 'cost',)

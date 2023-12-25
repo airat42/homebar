@@ -28,7 +28,7 @@ li {
 
 .flex {
 	display: flex;
-    width: 1900px;
+    width: 1840px;
 	height: 500px;
     flex-flow: wrap;
     margin-top: -10px;
@@ -58,8 +58,17 @@ li {
     padding: 0px;
     color: #f21818;
 }
+
 .detail_cock {
-    font-size: 20px;
+    font-size: 23px;
+}
+
+.rightpic {
+    width: 90px;
+    height: 200px;
+    position: absolute;
+    top:180px;
+    left:1300px;
 }
 
 .button {
@@ -95,6 +104,13 @@ li {
 
 .comm {
     font-size: 25px;
+    width: 1700px;
+    height: 300px;
+    position: absolute;
+    top:800px;
+    left:20px;
+    color: #c7ab0a;
+    line-height: 40px;
 }
 
 .rules {

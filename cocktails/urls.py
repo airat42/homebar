@@ -10,4 +10,4 @@ urlpatterns = [
     path('rules/', views.show_rules, name='rules'),
     path('wishlist/', views.show_wishlist, name='wishlist'),
     path('alcohol/<int:alcohol_id>/', views.show_alcohol, name='cocks'),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
