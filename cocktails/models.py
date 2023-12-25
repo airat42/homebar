@@ -51,3 +51,8 @@ class Cocktail(models.Model):
 
     def __str__(self):
         return self.name
+
+class Ingridient_Cost(models.Model):
+    ingridient_id = models.ForeignKey(Ingridient, on_delete=models.CASCADE)
+    cocktail_id = models.ForeignKey(Cocktail, on_delete=models.CASCADE)
+    value = models.IntegerField(default=1)

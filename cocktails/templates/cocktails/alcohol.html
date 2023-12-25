@@ -10,7 +10,7 @@
 <h1>Бар "У Шлёппы"</h1>
         <a class="rec_p" href="{% url 'index' %}">На главную</a>
 <div class="flex">
-{% for i in cocks.all %}
+{% for i in cocks %}
     <div class="flex-itm"><h3>{{ i }}</h3>
     <li>Вкус: {{ i.taste }}</li>
     <li>Тип: {{ i.group }}</li>

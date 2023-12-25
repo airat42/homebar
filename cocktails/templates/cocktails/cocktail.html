@@ -13,9 +13,9 @@
     <li>Вкус: {{ cocktail.taste }}</li>
     <li>Тип: {{ cocktail.group }}</li>
     <li>Крепость: {{ cocktail.alcohol }}</li>
-    <li class="cost">Стоимость: <b>{{ cocktail.cost }}</b></li>
-    <li class="rec">Состав: {% for i in cocktail.ingridients.all %}</li>
-        <li class="rec_p">{{ i }}</li>
+    <li class="cost">Стоимость: <b>{{ final_cost }}</b></li>
+    <li class="rec">Состав: {% for i in ingr_list %}</li>
+        <li class="rec_p">{{ i.ingridient_id}}: {{ i.value }}</li>
         {% endfor %}
     <li class="comm"> {{ cocktail.comment }}</li>
     </div>
