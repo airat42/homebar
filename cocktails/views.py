@@ -1,5 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from cocktails.models import Cocktail, Ingridient, Clients, Ingridient_Cost
+from django.views.generic import ListView
+from itertools import chain
 import sqlite3
 
 wish = [68, 69, 59, 3, 4, 8, 24, 31, 53, 57, 47, 52, 2, 10, 12, 14, 41, 23, 63, 16, 29, 17, 9, 15, 45, 46, 61, 66, 26, 33]
@@ -12,6 +14,7 @@ def get_unique_numbers(numbers):
 
 queryset1 = Clients.objects.raw('SELECT * FROM cocktails_clients WHERE balance <> 0 ORDER BY balance')
 
+
 def get_queryset(request):
     not_aval_set = get_available()
     cocks = Cocktail.objects.all().exclude(id__in=not_aval_set).order_by('name')
@@ -19,21 +22,32 @@ def get_queryset(request):
         'cocks': cocks
     }
 
-    # ingr_list = []
-    # connect = sqlite3.connect('db.sqlite3')
-    # cursor = connect.cursor()
-    # for cock in aval:
-    #     final_cost = 0
-    #     cursor.execute(f"SELECT cocktails_ingridient_cost.id FROM cocktails_ingridient_cost JOIN cocktails_cocktail ON cocktails_ingridient_cost.cocktail_id_id=cocktails_cocktail.id WHERE cocktails_cocktail.name='{cock}'")
-    #     ingridients_ids = cursor.fetchall()
-    #     for i in ingridients_ids:
-    #         ingridient_final = get_object_or_404(Ingridient_Cost, pk=i[0])
-    #         ingr_list.append(ingridient_final)
-    #         final_cost += int((ingridient_final.ingridient_id.cost / 500) * ingridient_final.value)
-    #         Cocktail.objects.filter(name=cock).update(cost=round(final_cost*1.1))
-    # connect.close()
+    # refresh_cock(cocks)
 
     return render(request, 'cocktails/index.html', context=context)
+
+
+def refresh_cock(cocks):
+    ingr_list = []
+    connect = sqlite3.connect('db.sqlite3')
+    cursor = connect.cursor()
+    for cock in cocks:
+        final_cost = 0
+        cursor.execute(
+            f"SELECT cocktails_ingridient_cost.id FROM cocktails_ingridient_cost JOIN cocktails_cocktail ON cocktails_ingridient_cost.cocktail_id_id=cocktails_cocktail.id WHERE cocktails_cocktail.name='{cock}'")
+        ingridients_ids = cursor.fetchall()
+        for i in ingridients_ids:
+            ingridient_final = get_object_or_404(Ingridient_Cost, pk=i[0])
+            ingr_list.append(ingridient_final)
+            final_cost += int((ingridient_final.ingridient_id.cost / 500) * ingridient_final.value)
+            Cocktail.objects.filter(name=cock).update(cost=round(final_cost * 1.1))
+    connect.close()
+
+
+# def get_context_data(self, object_list=None, **kwargs):
+#     context = super().get_context_data(**kwargs)
+#     context['queryset1'] = queryset1
+#     return context
 
 def get_available():
     not_aval = []
@@ -47,12 +61,6 @@ def get_available():
         not_aval.append(cock[0])
     not_aval_set = set(not_aval)
     return not_aval_set
-
-
-# def get_context_data(object_list=None, **kwargs):
-#     context = super().get_context_data(**kwargs)
-#     context['queryset1'] = queryset1
-#     return context
 
 def show_category(request, taste_id):
     not_aval_set = get_available()
