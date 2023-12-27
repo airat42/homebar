@@ -1,4 +1,6 @@
+{% extends 'cocktails/base.html' %}
 {% load static %}
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,6 +10,7 @@
 </head>
 <body>
 <h1>Бар "У Шлёппы"</h1>
+<div class="cont">
         <a class="rec_p" href="{% url 'index' %}">На главную</a>
 <div class="flex">
 {% for i in cocks %}
@@ -19,5 +22,7 @@
     <p class="button"><a class="lenk" href="{% url 'cocktail' i.pk %}">Подробнее</a></p></div>
 {% endfor %}
 </div>
+</div>
 </body>
 </html>
+{% endblock %}

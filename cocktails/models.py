@@ -57,3 +57,9 @@ class Ingridient_Cost(models.Model):
     ingridient_id = models.ForeignKey(Ingridient, on_delete=models.CASCADE)
     cocktail_id = models.ForeignKey(Cocktail, on_delete=models.CASCADE)
     value = models.IntegerField(default=1)
+
+class Bill(models.Model):
+    timestamp = models.DateTimeField()
+    cock_name = models.CharField(max_length=30)
+    cost = models.IntegerField()
+    client = models.CharField(max_length=20, default='anon')

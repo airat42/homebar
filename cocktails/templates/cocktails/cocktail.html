@@ -1,4 +1,6 @@
+{% extends 'cocktails/base.html' %}
 {% load static %}
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,7 +9,8 @@
     <link type="text/css" href="{% static 'cocktails/css/style1.css' %}" rel="stylesheet">
 </head>
 <body>
-    <div class="detail_cock"><h3 class="detail_cock_h3">{{ cocktail.name }}</h3>
+<h3 class="detail_cock_h3">{{ cocktail.name }}</h3>
+    <div class="detail_cock">
         <a class="rec_p" href="{% url 'index' %}">На главную</a>
         <p>
     <li>Вкус: {{ cocktail.taste }}</li>
@@ -17,13 +20,20 @@
     <li class="rec">Состав: {% for i in ingr_list %}</li>
         <li class="rec_p">{{ i.ingridient_id}}: {{ i.value }}</li>
         {% endfor %}
-
+        <form action="{% url 'order' cocktail.pk %}" method="post">
+                  {% csrf_token %}
+                  <p> {{ form.client }} </p>
+                   <button class="order" type="submit">Заказать</button>
+              </form>
    </div>
     <div class="rightpic">
         <img src="{{ cocktail.img.url }}" width="500" height="500">
     </div>
+
     <div class="comm">
         <a> {{ cocktail.comment }}</a>
     </div>
+
 </body>
 </html>
+{% endblock %}

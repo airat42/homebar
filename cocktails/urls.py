@@ -8,6 +8,8 @@ urlpatterns = [
     path('cocktail/<int:cocktail_id>/', views.show_cocktail, name='cocktail'),
     path('taste/<int:taste_id>/', views.show_category, name='cocks'),
     path('rules/', views.show_rules, name='rules'),
+    path('base/', views.show_bills, name='base'),
     path('wishlist/', views.show_wishlist, name='wishlist'),
     path('alcohol/<int:alcohol_id>/', views.show_alcohol, name='cocks'),
+    path('order/<int:cocktail_id>/', views.order, name='order')
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

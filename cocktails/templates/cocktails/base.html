@@ -1,0 +1,12 @@
+{% load static %}
+
+<body>
+            {% block content %}
+            {% endblock %}
+<div class='bills'>
+{% for bill in bills %}
+    <li>{{ bill.cock_name }} {{ bill.timestamp }} {{ bill.client }} {{ bill.cost }} Руб</li>
+    <br>
+{% endfor %}
+</div>
+</body>

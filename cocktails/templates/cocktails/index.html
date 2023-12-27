@@ -1,4 +1,7 @@
+{% extends 'cocktails/base.html' %}
 {% load static %}
+
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,24 +10,27 @@
     <link type="text/css" href="{% static 'cocktails/css/style1.css' %}" rel="stylesheet">
 </head>
 <body>
+
 <a href="http://127.0.0.1:8000/rules">Правила</a> <a href="http://127.0.0.1:8000/wishlist">Вишлист</a> <a href="http://127.0.0.1:8000/admin">admin</a>
 <h1> Бар "У Шлёппы"</h1>
 {% for user in queryset1 %}
     <h3 class="clients">{{ user }} : {{ user.balance }}</h3>
 {% endfor %}
-<a href="/taste/1">Кислые</a>
-<a href="/taste/2">Горькие</a>
-<a href="/taste/3">Прянные</a>
-<a href="/taste/4">Пикантные</a>
-<a href="/taste/5">Цитрусовые</a>
-<a href="/taste/6">Мятные</a>
-<a href="/taste/7">Сладкие</a>
-<a href="/taste/11">Кофейные</a>
-<p></p>
-<a href="/alcohol/3">Легкие</a>
-<a href="/alcohol/2">Средние</a>
-<a href="/alcohol/1">Крепкие</a>
-
+<div class="cont">
+    <div class="cats">
+    <a href="/taste/1">Кислые</a>
+    <a href="/taste/2">Горькие</a>
+    <a href="/taste/3">Прянные</a>
+    <a href="/taste/4">Пикантные</a>
+    <a href="/taste/5">Цитрусовые</a>
+    <a href="/taste/6">Мятные</a>
+    <a href="/taste/7">Сладкие</a>
+    <a href="/taste/11">Кофейные</a>
+    <p></p>
+    <a href="/alcohol/3">Легкие</a>
+    <a href="/alcohol/2">Средние</a>
+    <a href="/alcohol/1">Крепкие</a>
+</div>
 <div class="flex">
 {% for i in cocks %}
     <div class="flex-itm"><h3>{{ i }}</h3>
@@ -35,5 +41,7 @@
     <p class="button"><a class="lenk" href="{% url 'cocktail' i.pk %}">Подробнее</a></p></div>
 {% endfor %}
 </div>
+</div>
 </body>
 </html>
+{% endblock %}
