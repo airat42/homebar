@@ -28,6 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+BAR_PRICE = 1.20
 
 # Application definition
 

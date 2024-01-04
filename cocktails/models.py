@@ -31,11 +31,18 @@ class Group(models.Model):
     def __str__(self):
         return self.name
 
+class Method(models.Model):
+    name = models.CharField(max_length=150)
+
+    def __str__(self):
+        return self.name
+
 class Ingridient(models.Model):
     name = models.CharField(max_length=200)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     availability = models.BooleanField(default=False)
     cost = models.IntegerField(default=100)
+    alcohol_perc = models.IntegerField(default=1)
 
     def __str__(self):
         return self.name
@@ -46,9 +53,11 @@ class Cocktail(models.Model):
     alcohol = models.ForeignKey(Alcohol, blank=True, on_delete=models.CASCADE)
     taste = models.ForeignKey(Taste, blank=True, on_delete=models.CASCADE)
     group = models.ForeignKey(Group, blank=True, on_delete=models.CASCADE)
+    method = models.ForeignKey(Method, blank=True, on_delete=models.CASCADE, default=1)
     cost = models.IntegerField(default=1)
     comment = models.CharField(max_length=400, default='Это коктейль')
     img = models.ImageField(upload_to='media/', default='media/default.jpg')
+    alcohol_perc = models.IntegerField(default=1)
 
     def __str__(self):
         return self.name

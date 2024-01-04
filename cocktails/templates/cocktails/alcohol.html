@@ -17,7 +17,7 @@
     <div class="flex-itm"><h3>{{ i }}</h3>
     <li>Вкус: {{ i.taste }}</li>
     <li>Тип: {{ i.group }}</li>
-    <li>Крепость: {{ i.alcohol }}</li>
+    <li>Крепость: {{ i.alcohol }} ({{i.alcohol_perc}}°)</li>
     <li class="cost">Стоимость: <b>{{ i.cost }}</b></li>
     <p class="button"><a class="lenk" href="{% url 'cocktail' i.pk %}">Подробнее</a></p></div>
 {% endfor %}

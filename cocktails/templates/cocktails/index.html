@@ -12,7 +12,7 @@
 </head>
 <body>
 
-<a href="http://127.0.0.1:8000/rules">Правила</a> <a href="http://127.0.0.1:8000/wishlist">Вишлист</a> <a href="http://127.0.0.1:8000/admin">admin</a>
+<a href="http://127.0.0.1:8000/rules">Правила</a> <a href="http://127.0.0.1:8000/wishlist">Вишлист</a> <a href="http://127.0.0.1:8000/admin">admin</a> <a href="http://127.0.0.1:8000/refresh">refresh</a>
 <h1> Бар "У Шлёппы"</h1>
 {% for user in queryset1 %}
     <h3 class="clients">{{ user }} : {{ user.balance }}</h3>
@@ -37,7 +37,7 @@
     <div class="flex-itm"><h3>{{ i }}</h3>
     <li>Вкус: {{ i.taste }}</li>
     <li>Бокал: {{ i.group }}</li>
-    <li>Крепость: {{ i.alcohol }}</li>
+    <li>Крепость: {{ i.alcohol }} ({{i.alcohol_perc}}°)</li>
     <li class="cost">Стоимость: <b>{{ i.cost }}</b></li>
     <p class="button"><a class="lenk" href="{% url 'cocktail' i.pk %}">Подробнее</a></p></div>
 {% endfor %}

@@ -1,11 +1,9 @@
-import time
 from datetime import datetime, date
 from forms import CreateForm
+from my_bar.settings import BAR_PRICE
 
 from django.shortcuts import render, get_object_or_404, redirect
 from cocktails.models import Cocktail, Ingridient, Clients, Ingridient_Cost, Bill
-from django.views.generic import ListView
-from itertools import chain
 import sqlite3
 
 wish = [68, 69, 59, 3, 4, 8, 24, 31, 53, 57, 47, 52, 2, 10, 12, 14, 41, 23, 63, 16, 29, 17, 9, 15, 45, 46, 61, 66, 26, 33]
@@ -27,26 +25,29 @@ def get_queryset(request):
         'cocks': cocks,
         'bills': bills,
     }
-    # refresh_cock(cocks)
     return render(request, 'cocktails/index.html', context=context)
 
-
-def refresh_cock(cocks):
-    ingr_list = []
+def refresh_cock(request):
+    cocks = Cocktail.objects.all().order_by('name')
     connect = sqlite3.connect('db.sqlite3')
     cursor = connect.cursor()
     for cock in cocks:
         final_cost = 0
+        litres = 0
+        final_perc = 0
         cursor.execute(
             f"SELECT cocktails_ingridient_cost.id FROM cocktails_ingridient_cost JOIN cocktails_cocktail ON cocktails_ingridient_cost.cocktail_id_id=cocktails_cocktail.id WHERE cocktails_cocktail.name='{cock}'")
         ingridients_ids = cursor.fetchall()
         for i in ingridients_ids:
             ingridient_final = get_object_or_404(Ingridient_Cost, pk=i[0])
-            ingr_list.append(ingridient_final)
             final_cost += int((ingridient_final.ingridient_id.cost / 500) * ingridient_final.value)
-            Cocktail.objects.filter(name=cock).update(cost=round(final_cost * 1.1))
+            litres += int(ingridient_final.value)
+            final_perc += int(ingridient_final.ingridient_id.alcohol_perc * ingridient_final.value)
+        final_alcohol = final_perc / litres
+        Cocktail.objects.filter(name=cock).update(cost=round(final_cost * BAR_PRICE))
+        Cocktail.objects.filter(name=cock).update(alcohol_perc=round(final_alcohol))
     connect.close()
-
+    return redirect(f'http://127.0.0.1:8000/')
 
 # def get_context_data(self, object_list=None, **kwargs):
 #     context = super().get_context_data(**kwargs)
@@ -81,7 +82,6 @@ def show_cocktail(request, cocktail_id):
     cocktail = get_object_or_404(Cocktail, pk=cocktail_id)
     form = CreateForm()
     ingr_list = []
-    final_cost = 0
     connect = sqlite3.connect('db.sqlite3')
     cursor = connect.cursor()
     cursor.execute(f"SELECT id FROM cocktails_ingridient_cost WHERE cocktail_id_id={cocktail_id}")
@@ -90,13 +90,11 @@ def show_cocktail(request, cocktail_id):
     for i in ingridients_ids:
         ingridient_final = get_object_or_404(Ingridient_Cost, pk=i[0])
         ingr_list.append(ingridient_final)
-        final_cost += int((ingridient_final.ingridient_id.cost / 500) * ingridient_final.value)
-        bills = show_bills()
+    bills = show_bills()
     context = {
         'cocktail': cocktail,
         'title': cocktail.name,
         'ingr_list': ingr_list,
-        'final_cost': round(final_cost * 1.1),
         'bills': bills,
         'form': form
     }
