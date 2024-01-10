@@ -18,9 +18,9 @@ queryset1 = Clients.objects.raw('SELECT * FROM cocktails_clients WHERE balance <
 
 
 def get_queryset(request):
+    bills = show_bills()
     not_aval_set = get_available()
     cocks = Cocktail.objects.all().exclude(id__in=not_aval_set).order_by('name')
-    bills = show_bills()
     context = {
         'cocks': cocks,
         'bills': bills,
@@ -68,9 +68,9 @@ def get_available():
     return not_aval_set
 
 def show_category(request, taste_id):
+    bills = show_bills()
     not_aval_set = get_available()
     cocks = Cocktail.objects.all().exclude(id__in=not_aval_set).filter(taste_id=taste_id).order_by('name')
-    bills = show_bills()
     context = {
         'cocks': cocks,
         'taste_id': taste_id,
@@ -79,6 +79,7 @@ def show_category(request, taste_id):
     return render(request, 'cocktails/taste.html', context=context)
 
 def show_cocktail(request, cocktail_id):
+    bills = show_bills()
     cocktail = get_object_or_404(Cocktail, pk=cocktail_id)
     form = CreateForm()
     ingr_list = []
@@ -90,7 +91,6 @@ def show_cocktail(request, cocktail_id):
     for i in ingridients_ids:
         ingridient_final = get_object_or_404(Ingridient_Cost, pk=i[0])
         ingr_list.append(ingridient_final)
-    bills = show_bills()
     context = {
         'cocktail': cocktail,
         'title': cocktail.name,
@@ -100,6 +100,13 @@ def show_cocktail(request, cocktail_id):
     }
 
     return render(request, 'cocktails/cocktail.html', context=context)
+
+
+def show_bills():
+    today = str(date.today())
+    bills = Bill.objects.filter(timestamp__icontains=today).order_by('-timestamp')
+    return bills
+
 
 def show_rules(request):
     return render(request, 'cocktails/rules.html')
@@ -112,9 +119,9 @@ def show_wishlist(request):
     return render(request, 'cocktails/wishlist.html', context=context)
 
 def show_alcohol(request, alcohol_id):
+    bills = show_bills()
     not_aval_set = get_available()
     cocks = Cocktail.objects.all().exclude(id__in=not_aval_set).order_by('name').filter(alcohol_id=alcohol_id)
-    bills = show_bills()
     context = {
         'cocks': cocks,
         'alcohol_id': alcohol_id,
@@ -127,6 +134,11 @@ def order(request, cocktail_id):
         client_id = request.POST.get("client")
         cock = Cocktail.objects.all().get(id=cocktail_id)
         client_obj = Clients.objects.get(id=client_id)
+        ingrids = Ingridient_Cost.objects.filter(cocktail_id=cocktail_id)
+        for i in ingrids:
+            Ingridient.objects.filter(id=i.ingridient_id.id).update(count=i.ingridient_id.count - i.value)
+            if int(Ingridient.objects.get(id=i.ingridient_id.id).count) <= 0:
+                Ingridient.objects.filter(id=i.ingridient_id.id).update(availability=False)
         connect = sqlite3.connect('db.sqlite3')
         cursor = connect.cursor()
         sqlite_insert_query = f"""INSERT INTO cocktails_bill
@@ -134,13 +146,11 @@ def order(request, cocktail_id):
                               VALUES
                               ('{datetime.now()}', '{cock.name}', '{client_obj.name}', {cock.cost});"""
         sqlite_insert_query_cli = f"UPDATE cocktails_clients SET balance = balance - {cock.cost} WHERE id = {client_id}"
+        # for i in inrgrids
+        # sqlite_insert_query_count = f""
         cursor.execute(sqlite_insert_query)
         cursor.execute(sqlite_insert_query_cli)
         connect.commit()
         connect.close()
     return redirect(f'http://127.0.0.1:8000/cocktail/{cocktail_id}')
 
-def show_bills():
-    today = str(date.today())
-    bills = Bill.objects.filter(timestamp__icontains=today).order_by('-timestamp')
-    return bills

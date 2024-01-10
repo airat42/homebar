@@ -1,5 +1,4 @@
-html, body {
-    padding: 0px;
+body {
     color: #c7ab0a;
     background: repeating-linear-gradient(45deg, #000000, #212121 10px, #0d0d0c 10px, #1f1e1c 20px);
     font-family: Gill Sans;
@@ -9,11 +8,11 @@ h1 {
     font-size: 70px;
     font-family: Marker Felt;
 }
-h3 {
+.flex h3 {
    font-style: italic;
    text-align: center;
    color: #c7ab0a;
-   font-size: 19px;
+   font-size: 22px;
 }
 
 a {
@@ -22,7 +21,7 @@ a {
     padding: 0px;
 }
 
-li {
+.flex li {
     line-height: 140%;
 }
 
@@ -31,12 +30,9 @@ br {
 }
 .flex {
 	display: flex;
-    width: 1600px;
-	height: 500px;
     flex-flow: wrap;
-    margin-top: 0px;
-    margin-left: 0px;
-    padding: 40px;
+    margin-top: 40px;
+
 }
 
 .clients {
@@ -46,7 +42,7 @@ br {
 
 .flex-itm {
     margin: 15px;
-    padding: 15px;
+    padding: 10px;
     width: 240px;
 	height: 190px;
     font-size: 18px;
@@ -54,6 +50,7 @@ br {
     background: radial-gradient(circle at 65% 15%, #1c1c1c, #000000);
     color: #FFFFFF;
     margin-top: 20px;
+    border-radius: 10px;
 }
 
 .cost {
@@ -82,18 +79,28 @@ br {
     text-align: center;
     background: #c7ab0a;
     font-style: bold;
+    margin-top: 12px;
+    width: 260px;
+    margin-left: -13px;
+    border-radius: 4px;
+}
+
+.lenk {
+   color: #000000;
+   font-style: bold;
 }
 
 .order {
    font-size: 30px;
    width: 150px;
-   height: 40px;
+   height: 60px;
    background: #c7ab0a;
    text-align: center;
-   border: 3px solid #c7ab0a;
+   border: 3px solid black;
    font-style: bold;
    margin-top: 10px;
-   margin-left: 10px;
+   margin-left: 15px;
+   border-radius: 10px;
 }
 
 .order:hover {
@@ -113,21 +120,37 @@ br {
     position: absolute;
     left: 700px;
 }
+.detail_cock li {
+    padding: 5px;
+}
 
 .rec {
     color: #c7ab0a;
+    padding: 10px;
 }
 
+
 .rec_p {
+    color: #FFFFFF;
+    margin: 100px;
+    padding: 7px;
+    font-size: 20px;
+    border: 2px solid #FFFFFF;
+}
+
+.rec_li {
     color: #FFFFFF;
     margin: 5px;
     padding: 0px;
 }
-
-.lenk {
-   color: #000000;
-   font-style: bold;
+.detail_cock .rec_p {
+    color: #FFFFFF;
+    margin: 0px;
+    padding: 7px;
+    font-size: 20px;
+    border: 2px solid #FFFFFF;
 }
+
 
 .comm {
     font-size: 25px;
@@ -135,7 +158,7 @@ br {
     height: 300px;
     position: absolute;
     top:800px;
-    left:155px;
+    left:25px;
     color: #c7ab0a;
     line-height: 40px;
 }
@@ -155,10 +178,61 @@ br {
 
 .cont {
     position: absolute;
-    left:170px;
+    left: 50px;
 
 .cats {
     position: absolute;
-    left: 430px;
+    left: 520px;
     top: -10px;
+    font-size: 17px;
+}
+
+.sidepanel {
+  height: 1250px; /* Укажите высоту */
+  width: 0; /* 0 ширина-измените это с помощью JavaScript */
+  position: fixed; /* Оставаться на месте */
+  z-index: 1; /* Оставайтесь на вершине */
+  top: 0;
+  left: 0px;
+  background-color: #111; /* Черный */
+  overflow-x: hidden; /* Отключить горизонтальную прокрутку */
+  padding-top: 60px; /* Поместите содержимое 60px сверху */
+  transition: 0.5s; /* 0.5 секунды эффект перехода для скольжения в боковой панели */
+}
+
+/* Боковая панель ссылок */
+.sidepanel a {
+  text-decoration: none;
+  font-size: 20px;
+  color: #e9e9e9;
+  display: block;
+  transition: 0.3s;
+}
+
+/* При наведении курсора мыши на навигационные ссылки измените их цвет */
+.sidepanel a:hover {
+  color: #f1f1f1;
+}
+
+/* Положение и стиль кнопки закрытия (верхний правый угол) */
+.sidepanel .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+/* Стиль кнопка, которая используется для открытия боковой панели */
+.openbtn {
+  font-size: 20px;
+  cursor: pointer;
+  background-color: #111;
+  color: white;
+  padding: 10px 15px;
+  border: 2px solid #FFFFFF;
+}
+
+.openbtn:hover {
+  background-color: #444;
 }

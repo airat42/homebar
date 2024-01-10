@@ -1,12 +1,11 @@
 {% extends 'cocktails/base.html' %}
-{% load static %}
+
 {% block content %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Карта бара</title>
-    <link type="text/css" href="{% static 'cocktails/css/style1.css' %}" rel="stylesheet">
 </head>
 <body>
 <h1>Бар "У Шлёппы"</h1>
@@ -21,6 +20,17 @@
     <li class="cost">Стоимость: <b>{{ i.cost }}</b></li>
     <p class="button"><a class="lenk" href="{% url 'cocktail' i.pk %}">Подробнее</a></p></div>
 {% endfor %}
+</div>
+    <div id="mySidepanel" class='sidepanel'>
+    <button class="openbtn" onclick="openNav()">&#9776; Заказы </button>
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <div id="items">
+{% for bill in bills %}
+    <a>{{ bill.cock_name }} {{ bill.timestamp }} {{ bill.client }} {{ bill.cost }} Руб</a>
+    <br>
+
+{% endfor %}
+    </div>
 </div>
 </div>
 </body>

@@ -22,6 +22,17 @@
     <p class="button"><a class="lenk" href="{% url 'cocktail' i.pk %}">Подробнее</a></p></div>
 {% endfor %}
 </div>
+    <div id="mySidepanel" class='sidepanel'>
+    <button class="openbtn" onclick="openNav()">&#9776; Заказы </button>
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <div id="items">
+{% for bill in bills %}
+    <a>{{ bill.cock_name }} {{ bill.timestamp }} {{ bill.client }} {{ bill.cost }} Руб</a>
+    <br>
+
+{% endfor %}
+    </div>
+</div>
 </div>
 </body>
 </html>

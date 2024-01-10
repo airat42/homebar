@@ -1,5 +1,4 @@
 {% extends 'cocktails/base.html' %}
-{% load static %}
 
 {% block content %}
 <!DOCTYPE html>
@@ -7,8 +6,20 @@
 <head>
     <meta charset="UTF-8">
     <title>Карта бара</title>
-    <link type="text/css" href="{% static 'cocktails/css/style1.css' %}" rel="stylesheet">
-    <link rel="shortcut icon" type="image/png" href="{% static 'cocktails/img/favicon.ico' %}"/>
+    <style type="text/css">
+openbtn {
+  font-size: 20px;
+  cursor: pointer;
+  background-color: #111;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+}
+
+openbtn:hover {
+  background-color: #444;
+}
+</style>
 </head>
 <body>
 
@@ -41,6 +52,18 @@
     <li class="cost">Стоимость: <b>{{ i.cost }}</b></li>
     <p class="button"><a class="lenk" href="{% url 'cocktail' i.pk %}">Подробнее</a></p></div>
 {% endfor %}
+
+<div id="mySidepanel" class='sidepanel'>
+    <button class="openbtn" onclick="openNav()">&#9776; Заказы </button>
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <div id="items">
+{% for bill in bills %}
+    <a>{{ bill.cock_name }} {{ bill.timestamp }} {{ bill.client }} {{ bill.cost }} Руб</a>
+    <br>
+
+{% endfor %}
+    </div>
+</div>
 </div>
 </div>
 </body>

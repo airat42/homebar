@@ -3,7 +3,6 @@ from django.db import models
 class Clients(models.Model):
     name = models.CharField(max_length=200)
     balance = models.IntegerField(default=0)
-
     def __str__(self):
         return self.name
 
@@ -43,6 +42,7 @@ class Ingridient(models.Model):
     availability = models.BooleanField(default=False)
     cost = models.IntegerField(default=100)
     alcohol_perc = models.IntegerField(default=1)
+    count = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name
