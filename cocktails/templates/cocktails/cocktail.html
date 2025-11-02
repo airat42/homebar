@@ -63,10 +63,43 @@
   color: #c7ab0a;
   font-size: 20px;
 }
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: white;
+    font-size: 20px;
+    margin: 15% auto;
+    padding: 20px;
+    width: 70%;
+    max-width: 500px;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    cursor: pointer;
+}
 </style>
 </head>
 <body>
 <h3 class="detail_cock_h3">{{ cocktail.name }}</h3>
+    <div class="modal" id="myModal">
+        <div class="modal-content">
+            <span class="close">×</span>
+            <h2>Заказ оформлен</h2>
+            <p>Проверьте его наличие в окне "Заказы"</p>
+        </div>
+    </div>
     <div class="detail_cock">
         <a class="rec_p" href="{% url 'index' %}">На главную</a>
         <p>
@@ -80,9 +113,31 @@
         <li>Приготовление: {{ cocktail.method }}</li>
         <form action="{% url 'order' cocktail.pk %}" method="post">
                   {% csrf_token %}
-                  {{ form.client }}
-                   <button class="order" type="submit">Заказать</button>
-              </form>
+                  Клиент: {{ form.client }}
+                   <button class="order" id ="openModal" type="submit">Заказать</button>
+        <script>
+            const modal = document.getElementById('myModal');
+            const btn = document.getElementById('openModal');
+            const span = document.querySelector('.close');
+
+            // Открытие окна
+            btn.addEventListener('click', function() {
+                modal.style.display = 'block';
+            });
+
+            // Закрытие по крестику
+            span.addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+
+            // Закрытие по клику вне окна
+            window.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        </script>
+        </form>
    </div>
 
     <div class="rightpic">

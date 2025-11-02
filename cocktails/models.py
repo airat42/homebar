@@ -49,7 +49,6 @@ class Ingridient(models.Model):
 
 class Cocktail(models.Model):
     name = models.CharField(max_length=200)
-    ingridients = models.ManyToManyField(Ingridient)
     alcohol = models.ForeignKey(Alcohol, blank=True, on_delete=models.CASCADE)
     taste = models.ForeignKey(Taste, blank=True, on_delete=models.CASCADE)
     group = models.ForeignKey(Group, blank=True, on_delete=models.CASCADE)

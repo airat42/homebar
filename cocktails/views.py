@@ -59,7 +59,7 @@ def get_available():
     connect = sqlite3.connect('db.sqlite3')
     cursor = connect.cursor()
     cursor.execute(
-        f"SELECT cocktails_ingridient_cost.cocktail_id_id FROM cocktails_ingridient_cost JOIN cocktails_ingridient ON cocktails_ingridient_cost.ingridient_id_id=cocktails_ingridient.id WHERE cocktails_ingridient.availability is False")
+        f"SELECT cocktails_ingridient_cost.cocktail_id_id FROM cocktails_ingridient_cost JOIN cocktails_ingridient ON cocktails_ingridient_cost.ingridient_id_id=cocktails_ingridient.id WHERE cocktails_ingridient.availability is False OR cocktails_ingridient_cost.value > cocktails_ingridient.count")
     not_aval_cocks = cursor.fetchall()
     connect.close()
     for cock in not_aval_cocks:
