@@ -1,71 +1,62 @@
 {% extends 'cocktails/base.html' %}
+{% block title %}Карта бара{% endblock %}
 
 {% block content %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Карта бара</title>
-    <style type="text/css">
-openbtn {
-  font-size: 20px;
-  cursor: pointer;
-  background-color: #111;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-}
+<header style="display:flex; justify-content: space-between; align-items:center; padding:15px; background:#1a1a1a;">
+    <h1>Бар "У Шлёппы"</h1>
+    <div>
+        <a href="/rules">Правила</a> |
+        <a href="/wishlist">Вишлист</a> |
+        <a href="/admin">Admin</a> |
+        <a href="/refresh">Refresh</a>
+    </div>
+</header>
 
-openbtn:hover {
-  background-color: #444;
-}
-</style>
-</head>
-<body>
+<section style="padding: 15px;">
+    <div class="clients-list">
+        {% for user in queryset1 %}
+            <p>{{ user }} : {{ user.balance }}</p>
+        {% endfor %}
+    </div>
 
-<a href="http://127.0.0.1:8000/rules">Правила</a> <a href="http://127.0.0.1:8000/wishlist">Вишлист</a> <a href="http://127.0.0.1:8000/admin">admin</a> <a href="http://127.0.0.1:8000/refresh">refresh</a>
-<h1> Бар "У Шлёппы"</h1>
-{% for user in queryset1 %}
-    <h3 class="clients">{{ user }} : {{ user.balance }}</h3>
-{% endfor %}
-<div class="cont">
-    <div class="cats">
-<!--    <a href="/taste/1">Кислые</a>-->
-    <a href="/taste/2">Горькие</a>
-    <a href="/taste/3">Нейтральные</a>
-    <a href="/taste/4">Пикантные</a>
-    <a href="/taste/5">Цитрусовые</a>
-    <a href="/taste/6">Мятные</a>
-    <a href="/taste/7">Сладкие</a>
-    <a href="/taste/11">Кофейные</a>
-    <p></p>
-    <a href="/alcohol/3">Легкие</a>
-    <a href="/alcohol/2">Средние</a>
-    <a href="/alcohol/1">Крепкие</a>
-</div>
-<div class="flex">
-{% for i in cocks %}
-    <div class="flex-itm"><h3>{{ i }}</h3>
-    <li>Вкус: {{ i.taste }}</li>
-    <li>Бокал: {{ i.group }}</li>
-    <li>Крепость: {{ i.alcohol }} ({{i.alcohol_perc}}°)</li>
-    <li class="cost">Стоимость: <b>{{ i.cost }}</b></li>
-    <p class="button"><a class="lenk" href="{% url 'cocktail' i.pk %}">Подробнее</a></p></div>
-{% endfor %}
+    <div class="categories" style="margin:20px 0;">
+        <strong>Вкусы:</strong>
+        {% for taste in tastes %}
+            <a href="/taste/{{ taste.pk }}" class="category-link">{{ taste }}</a>
+        {% endfor %}
+        <br>
+        <strong>Крепость:</strong>
+        <a href="/alcohol/3">Легкие</a>
+        <a href="/alcohol/2">Средние</a>
+        <a href="/alcohol/1">Крепкие</a>
+    </div>
 
-<div id="mySidepanel" class='sidepanel'>
-    <button class="openbtn" onclick="openNav()">&#9776; Заказы </button>
+    <div class="cocktail-grid" style="display:grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap:15px;">
+        {% for i in cocks %}
+        <div class="cocktail-card" style="background:#1e1e1e; padding:15px; border-radius:10px; box-shadow:0 0 10px #000;">
+            <h3 class="cock-title">{{ i }}</h3>
+            <ul>
+                <li>Вкус: {{ i.taste }}</li>
+                <li>Бокал: {{ i.group }}</li>
+                <li>Крепость: {{ i.alcohol }} ({{i.alcohol_perc}}°)</li>
+                <li class="cost">Стоимость: <b class="cost">{{ i.cost }}</b></li>
+            </ul>
+            <a class="openbtn" href="{% url 'cocktail' i.pk %}">Подробнее</a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Sidepanel for orders -->
+<div id="mySidepanel" class="sidepanel">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-    <div id="items">
-{% for bill in bills %}
-    <a>{{ bill.cock_name }} {{ bill.timestamp }} {{ bill.client }} {{ bill.cost }} Руб</a>
-    <br>
-
-{% endfor %}
+    <h2 style="padding-left:20px;">Заказы</h2>
+    <div id="items" style="padding-left:20px;">
+        {% for bill in bills %}
+            <p>{{ bill.cock_name }} {{ bill.timestamp }} {{ bill.client }} {{ bill.cost }} Руб</p>
+        {% endfor %}
     </div>
 </div>
-</div>
-</div>
-</body>
-</html>
+
+<button class="openbtn" onclick="openNav()" style="position:fixed; bottom:20px; left:20px;">&#9776; Заказы</button>
 {% endblock %}

@@ -1,18 +1,14 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Правила Шлёппы</title>
-    <link type="text/css" href="{% static 'cocktails/css/style1.css' %}" rel="stylesheet">
-</head>
-<body>
-<div>
-<h1>Вишлист бара</h1>
-    <a class="rec_p" href="{% url 'index' %}">Назад</a>
-{% for i in wishlist.all %}
-    <li>{{ i }}</li>
-{% endfor %}
-</div>
-</body>
-</html>
+{% extends 'cocktails/base.html' %}
+{% block title %}Вишлист{% endblock %}
+
+{% block content %}
+<section style="padding:20px; max-width:800px; margin:auto;">
+    <a href="{% url 'index' %}" style="color:#ffd700;">&#8592; На главную</a>
+    <h2>Вишлист бара</h2>
+    <ul style="margin-top:20px; line-height:1.8;">
+        {% for i in wishlist.all %}
+        <li>{{ i }}</li>
+        {% endfor %}
+    </ul>
+</section>
+{% endblock %}

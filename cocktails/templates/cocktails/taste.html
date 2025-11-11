@@ -1,39 +1,46 @@
 {% extends 'cocktails/base.html' %}
-{% load static %}
-{% block content %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Карта бара</title>
-    <link type="text/css" href="{% static 'cocktails/css/style1.css' %}" rel="stylesheet">
-</head>
-<body>
-<h1>Бар "У Шлёппы"</h1>
-<div class="cont">
-        <a class="rec_p" href="{% url 'index' %}">На главную</a>
-<div class="flex">
-{% for i in cocks.all %}
-    <div class="flex-itm"><h3>{{ i }}</h3>
-    <li>Вкус: {{ i.taste }}</li>
-    <li>Тип: {{ i.group }}</li>
-    <li>Крепость: {{ i.alcohol }} ({{i.alcohol_perc}}°)</li>
-    <li class="cost">Стоимость: <b>{{ i.cost }}</b></li>
-    <p class="button"><a class="lenk" href="{% url 'cocktail' i.pk %}">Подробнее</a></p></div>
-{% endfor %}
-</div>
-    <div id="mySidepanel" class='sidepanel'>
-    <button class="openbtn" onclick="openNav()">&#9776; Заказы </button>
-    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-    <div id="items">
-{% for bill in bills %}
-    <a>{{ bill.cock_name }} {{ bill.timestamp }} {{ bill.client }} {{ bill.cost }} Руб</a>
-    <br>
+{% block title %}Коктейли по вкусу{% endblock %}
 
-{% endfor %}
+{% block content %}
+<header style="display:flex; justify-content: space-between; align-items:center; padding:15px; background:#1a1a1a;">
+    <h1>Бар "У Шлёппы"</h1>
+    <div>
+        <a href="/rules">Правила</a> |
+        <a href="/wishlist">Вишлист</a> |
+        <a href="/admin">Admin</a> |
+        <a href="/refresh">Refresh</a>
     </div>
-</div>
-</div>
-</body>
-</html>
+</header>
+
+<section style="padding:20px;">
+    <a href="{% url 'index' %}" style="color:#ffd700;">&#8592; На главную</a>
+    <h2>Коктейли выбранного вкуса</h2>
+
+    <div class="cocktail-grid" style="display:grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap:15px; margin-top:20px;">
+        {% for i in cocks.all %}
+        <div class="cocktail-card" style="background:#1e1e1e; padding:15px; border-radius:10px;">
+            <h3 class="cock-title">{{ i }}</h3>
+            <ul>
+                <li>Вкус: {{ i.taste }}</li>
+                <li>Тип: {{ i.group }}</li>
+                <li>Крепость: {{ i.alcohol }} ({{i.alcohol_perc}}°)</li>
+                <li class="cost">Стоимость: <b class="cost">{{ i.cost }}</b></li>
+            </ul>
+            <a class="openbtn" href="{% url 'cocktail' i.pk %}">Подробнее</a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Sidepanel for orders -->
+    <div id="mySidepanel" class="sidepanel">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <h2 style="padding-left:20px;">Заказы</h2>
+        <div id="items" style="padding-left:20px;">
+            {% for bill in bills %}
+            <p>{{ bill.cock_name }} {{ bill.timestamp }} {{ bill.client }} {{ bill.cost }} Руб</p>
+            {% endfor %}
+        </div>
+    </div>
+    <button class="openbtn" onclick="openNav()" style="position:fixed; bottom:20px; left:20px;">&#9776; Заказы</button>
+</section>
 {% endblock %}

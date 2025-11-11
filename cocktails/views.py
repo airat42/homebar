@@ -3,7 +3,7 @@ from forms import CreateForm
 from my_bar.settings import BAR_PRICE
 
 from django.shortcuts import render, get_object_or_404, redirect
-from cocktails.models import Cocktail, Ingridient, Clients, Ingridient_Cost, Bill
+from cocktails.models import Cocktail, Ingridient, Clients, Ingridient_Cost, Bill, Taste
 import sqlite3
 
 wish = [68, 69, 59, 3, 4, 8, 24, 31, 53, 57, 47, 52, 2, 10, 12, 14, 41, 23, 63, 16, 29, 17, 9, 15, 45, 46, 61, 66, 26, 33]
@@ -21,9 +21,11 @@ def get_queryset(request):
     bills = show_bills()
     not_aval_set = get_available()
     cocks = Cocktail.objects.all().exclude(id__in=not_aval_set).order_by('name')
+    tastes = Taste.objects.all()
     context = {
         'cocks': cocks,
         'bills': bills,
+        'tastes': tastes,
     }
     return render(request, 'cocktails/index.html', context=context)
 
