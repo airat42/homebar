@@ -2,33 +2,6 @@
 {% block title %}Карта бара{% endblock %}
 
 {% block content %}
-<header style="display:flex; justify-content: space-between; align-items:center; padding:15px; background:#1a1a1a;">
-    <h1>Бар "У Шлёппы"</h1>
-    <div>
-        <a href="/rules">Правила</a> |
-        <a href="/wishlist">Вишлист</a> |
-        {% if user.is_authenticated %}
-            <span style="color:#ffd700;">Привет, {{ user.username }}!</span>
-            <a>У вас: {{ client.balance }}</a>
-            <a href="{% url 'logout' %}">Выйти</a>
-        {% else %}
-            <a href="{% url 'login' %}">Войти</a> |
-            <a href="{% url 'register' %}">Регистрация</a>
-        {% endif %}
-        {% if user.is_staff or user.is_superuser %}
-        <a href="/admin">Admin</a> |
-        <a href="/refresh">Refresh</a>
-        {% endif %}
-    </div>
-</header>
-
-<section style="padding: 15px;">
-    <div class="clients-list">
-        {% for user in queryset1 %}
-            <p>{{ user }} : {{ user.balance }}</p>
-        {% endfor %}
-    </div>
-
     <div class="categories" style="margin:20px 0;">
         <strong>Вкусы:</strong>
         {% for taste in tastes %}
@@ -40,33 +13,5 @@
         <a href="/alcohol/2">Средние</a>
         <a href="/alcohol/1">Крепкие</a>
     </div>
-
-    <div class="cocktail-grid" style="display:grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap:15px;">
-        {% for i in cocks %}
-        <div class="cocktail-card" style="background:#1e1e1e; padding:15px; border-radius:10px; box-shadow:0 0 10px #000;">
-            <h3 class="cock-title">{{ i }}</h3>
-            <ul>
-                <li>Вкус: {{ i.taste }}</li>
-                <li>Бокал: {{ i.group }}</li>
-                <li>Крепость: {{ i.alcohol }} ({{i.alcohol_perc}}°)</li>
-                <li class="cost">Стоимость: <b class="cost">{{ i.cost }}</b></li>
-            </ul>
-            <a class="openbtn" href="{% url 'cocktail' i.pk %}">Подробнее</a>
-        </div>
-        {% endfor %}
-    </div>
 </section>
-
-<!-- Sidepanel for orders -->
-<div id="mySidepanel" class="sidepanel">
-    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-    <h2 style="padding-left:20px;">Заказы</h2>
-    <div id="items" style="padding-left:20px;">
-        {% for bill in bills %}
-            <p>{{ bill.cock_name }} {{ bill.timestamp }} {{ bill.client }} {{ bill.cost }} Руб</p>
-        {% endfor %}
-    </div>
-</div>
-
-<button class="openbtn" onclick="openNav()" style="position:fixed; bottom:20px; left:20px;">&#9776; Заказы</button>
 {% endblock %}

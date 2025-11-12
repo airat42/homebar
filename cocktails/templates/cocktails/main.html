@@ -111,46 +111,9 @@
 </head>
 <body>
 
-    <!-- 🔸 Шапка -->
-    <header style="display:flex; justify-content: space-between; align-items:center; padding:15px; background:#1a1a1a;">
-        <h1>Бар "У Шлёппы"</h1>
-        <div>
-            <a href="/rules">Правила</a> |
-            <a href="/wishlist">Вишлист</a> |
-            {% if user.is_authenticated %}
-                <span style="color:#ffd700;">Привет, {{ user.username }}!</span>
-                <a>У вас: {{ client.balance }}</a>
-                <a href="{% url 'logout' %}">Выйти</a>
-            {% else %}
-                <a href="{% url 'login' %}">Войти</a> |
-                <a href="{% url 'register' %}">Регистрация</a>
-            {% endif %}
-            {% if user.is_staff or user.is_superuser %}
-            <a href="/admin">Admin</a> |
-            <a href="/refresh">Refresh</a>
-            {% endif %}
-        </div>
-    </header>
-
     <!-- 🔸 Контент -->
     {% block content %}
     {% endblock %}
-    <section style="padding:20px;">
-    <!-- Сетка коктейлей -->
-    <div class="cocktail-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:15px;">
-        {% for i in cocks %}
-        <div class="cocktail-card" style="background:#1e1e1e; padding:15px; border-radius:10px; box-shadow:0 0 10px #000;">
-            <h3 class="cock-title">{{ i }}</h3>
-            <ul>
-                <li>Вкус: {{ i.taste }}</li>
-                <li>Бокал: {{ i.group }}</li>
-                <li>Крепость: {{ i.alcohol }} ({{ i.alcohol_perc }}°)</li>
-                <li class="cost">Стоимость: <b class="cost">{{ i.cost }}</b></li>
-            </ul>
-            <a class="openbtn" href="{% url 'cocktail' i.pk %}">Подробнее</a>
-        </div>
-        {% endfor %}
-    </div>
 
     <!-- 🔸 Боковая панель заказов -->
     {% if user.is_authenticated %}
@@ -162,12 +125,15 @@
                 <p>
                     {{ bill.cock_name }} — {{ bill.cost }} ₽ <br>
                     {{ bill.timestamp|date:"H:i" }} — {{ bill.client }}
-                    {% if bill.is_done %}
-                        <span style="color:#00ff66;">✅ Выполнен</span>
+                    {% if bill.is_completed %}
+                        <span class="completed">✓ Выполнен</span>
                     {% else %}
-                        <span style="color:#ffcc00;">🕒 В процессе</span>
+                        <span class="pending">⏳ В ожидании</span>
                         {% if user.is_staff %}
-                            <a href="{% url 'mark_completed' bill.id %}" style="color:#ffd700; margin-left:10px;">Отметить выполненым</a>
+                            <form method="post" action="{% url 'mark_completed' bill.id %}">
+                                {% csrf_token %}
+                                <button type="submit" style="background:none; border:none; color:#00ff66; cursor:pointer;">Отметить выполненным</button>
+                            </form>
                         {% endif %}
                     {% endif %}
                 </p>
@@ -178,6 +144,6 @@
 
     <button class="openbtn" onclick="openNav()" style="position:fixed; bottom:20px; left:20px;">&#9776; Заказы</button>
     {% endif %}
-</section>
+
 </body>
 </html>

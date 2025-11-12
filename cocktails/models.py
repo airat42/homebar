@@ -73,3 +73,7 @@ class Bill(models.Model):
     cock_name = models.CharField(max_length=30)
     cost = models.IntegerField()
     client = models.CharField(max_length=20, default='anon')
+    is_done = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.cock_name} — {self.client} ({'✅' if self.is_done else '🕒'})"

@@ -1,4 +1,4 @@
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from forms import CreateForm
 from my_bar.settings import BAR_PRICE
 from django.contrib.auth.models import User
@@ -8,6 +8,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from cocktails.models import Cocktail, Ingridient, Client, Ingridient_Cost, Bill, Taste
 import sqlite3
 from django.shortcuts import get_object_or_404, redirect
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 
 wish = [68, 69, 59, 3, 4, 8, 24, 31, 53, 57, 47, 52, 2, 10, 12, 14, 41, 23, 63, 16, 29, 17, 9, 15, 45, 46, 61, 66, 26, 33]
@@ -57,13 +58,20 @@ def login_view(request):
 
 
 def logout_view(request):
+    response = redirect('login')  # после выхода отправляем на страницу логина
     logout(request)
-    return redirect('login')
 
-queryset1 = Client.objects.raw('SELECT * FROM cocktails_clients WHERE balance <> 0 ORDER BY balance')
+    # Сбрасываем все cookies (кроме служебных Django)
+    for key in request.COOKIES:
+        response.delete_cookie(key)
+
+    messages.success(request, "Вы успешно вышли из системы.")
+    return response
 
 
 def get_queryset(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
     bills = show_bills(request)
     not_aval_set = get_available()
     cocks = Cocktail.objects.all().exclude(id__in=not_aval_set).order_by('name')
@@ -99,10 +107,6 @@ def refresh_cock(request):
     connect.close()
     return redirect(f'http://127.0.0.1:8000/')
 
-# def get_context_data(self, object_list=None, **kwargs):
-#     context = super().get_context_data(**kwargs)
-#     context['queryset1'] = queryset1
-#     return context
 
 def get_available():
     not_aval = []
@@ -158,14 +162,15 @@ def show_cocktail(request, pk):
     return render(request, 'cocktails/cocktail.html', context=context)
 
 
-
 def show_bills(request):
-    today = str(date.today())
+    if not request.user.is_authenticated:
+        return redirect('login')
+    yesterday = str(date.today() - timedelta(days=1))
     client = Client.objects.get(user=request.user)
     if client.user.is_staff or client.user.is_superuser:
-        bills = Bill.objects.filter(timestamp__icontains=today).order_by('-timestamp')
+        bills = Bill.objects.filter(timestamp__gt=yesterday).order_by('timestamp')
     else:
-        bills = Bill.objects.filter(timestamp__icontains=today, client=client).order_by('-timestamp')
+        bills = Bill.objects.filter(timestamp__gt=yesterday, client=client).order_by('timestamp')
     return bills
 
 
@@ -204,9 +209,9 @@ def order(request, cocktail_id):
         connect = sqlite3.connect('db.sqlite3')
         cursor = connect.cursor()
         sqlite_insert_query = f"""INSERT INTO cocktails_bill
-                              (timestamp, cock_name, client, cost)
+                              (timestamp, cock_name, client, cost, is_done)
                               VALUES
-                              ('{datetime.now()}', '{cock.name}', '{client.name}', {cock.cost});"""
+                              ('{datetime.now()}', '{cock.name}', '{client.name}', {cock.cost}, False);"""
         client.balance -= cock.cost
         client.save()
 
@@ -214,3 +219,11 @@ def order(request, cocktail_id):
         connect.commit()
         connect.close()
     return redirect(f'http://127.0.0.1:8000/cocktail/{cocktail_id}')
+
+@staff_member_required
+def mark_completed(request, bill_id):
+    bill = get_object_or_404(Bill, id=bill_id)
+    bill.is_done = True
+    bill.save(update_fields=["is_done"])  # <-- гарантирует, что только это поле сохраняется
+    messages.success(request, f"Заказ '{bill.cock_name}' помечен как выполненный.")
+    return redirect(request.META.get('HTTP_REFERER', 'index'))
