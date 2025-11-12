@@ -1,10 +1,10 @@
 from django import forms
-from cocktails.models import Clients
+from cocktails.models import Client
 
 class CreateForm(forms.Form):
-    client = forms.ModelChoiceField(label="Кто заказывает?", queryset=Clients.objects.all())
+    client = forms.ModelChoiceField(label="Кто заказывает?", queryset=Client.objects.all())
     class Meta:
-        model = Clients
+        model = Client
         fields = ['client',]
 
     def __init__(self, *args, **kwargs):

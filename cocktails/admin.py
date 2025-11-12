@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Ingridient, Cocktail, Category, Alcohol, Taste, Group, Clients, Ingridient_Cost, Bill
+from .models import Ingridient, Cocktail, Category, Alcohol, Taste, Group, Client, Ingridient_Cost, Bill
 
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name',)
@@ -38,6 +38,6 @@ admin.site.register(Category, CategoryAdmin)
 admin.site.register(Alcohol, AlcoholAdmin)
 admin.site.register(Taste, TasteAdmin)
 admin.site.register(Group, GroupAdmin)
-admin.site.register(Clients, ClientsAdmin)
+admin.site.register(Client, ClientsAdmin)
 admin.site.register(Ingridient_Cost, Ingridient_CostAdmin)
 admin.site.register(Bill, BillAdmin)

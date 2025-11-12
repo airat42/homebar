@@ -13,7 +13,7 @@
                 <li>Вкус: {{ cocktail.taste }}</li>
                 <li>Тип: {{ cocktail.group }}</li>
                 <li>Крепость: {{ cocktail.alcohol }} ({{cocktail.alcohol_perc}}°)</li>
-                <li class="cost">Стоимость: <b class="cost">{{ cocktail.cost }}</b></li>
+                <li>Стоимость: <b>{{ cocktail.cost }}</b></li>
                 <li>Состав:
                     <ul>
                         {% for i in ingr_list %}
@@ -26,7 +26,6 @@
 
             <form action="{% url 'order' cocktail.pk %}" method="post">
                 {% csrf_token %}
-                Клиент: {{ form.client }}
                 <button class="openbtn" id="openModal" type="submit">Заказать</button>
             </form>
         </div>

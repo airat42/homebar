@@ -1,8 +1,10 @@
 from django.db import models
+from django.contrib.auth.models import User
 
-class Clients(models.Model):
+class Client(models.Model):
     name = models.CharField(max_length=200)
     balance = models.IntegerField(default=0)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     def __str__(self):
         return self.name
 
