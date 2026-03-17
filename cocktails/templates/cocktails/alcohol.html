@@ -11,10 +11,10 @@
 </div>
 
 <!-- Категории крепости -->
-<div class="categories" style="margin:20px 0;">
+<div>
     <strong>Крепость:</strong>
-    <a href="/alcohol/3" class="category-link">Легкие</a>
-    <a href="/alcohol/2" class="category-link">Средние</a>
-    <a href="/alcohol/1" class="category-link">Крепкие</a>
+    {% for al in alco %}
+        <a href="/alcohol/{{ al.pk }}" class="category-link" style="padding:10px;">{{ al }}</a>
+    {% endfor %}
 </div>
 {% endblock %}

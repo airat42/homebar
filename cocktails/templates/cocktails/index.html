@@ -1,17 +1,22 @@
 {% extends 'cocktails/base.html' %}
 {% block title %}Карта бара{% endblock %}
-
+<style>
+    .category-link {
+            margin: 60px;
+        }
+</style>
 {% block content %}
-    <div class="categories" style="margin:20px 0;">
+    <div class="categories">
         <strong>Вкусы:</strong>
         {% for taste in tastes %}
-            <a href="/taste/{{ taste.pk }}" class="category-link">{{ taste }}</a>
+            <a href="/taste/{{ taste.pk }}" class="category-link" style="padding:10px">{{ taste }}</a>
         {% endfor %}
-        <br>
+    </div>
+    <div>
         <strong>Крепость:</strong>
-        <a href="/alcohol/3">Легкие</a>
-        <a href="/alcohol/2">Средние</a>
-        <a href="/alcohol/1">Крепкие</a>
+        {% for al in alco %}
+            <a href="/alcohol/{{ al.pk }}" class="category-link" style="padding:10px;">{{ al }}</a>
+        {% endfor %}
     </div>
 </section>
 {% endblock %}

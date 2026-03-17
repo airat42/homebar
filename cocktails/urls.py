@@ -6,7 +6,9 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('', views.get_queryset, name='index'),
     path('cocktail/<int:pk>/', views.show_cocktail, name='cocktail'),
+    path('just_drink/', views.just_drink, name='just_drink'),
     path('order/<int:cocktail_id>/', views.order, name='order'),
+    path('order_drink/', views.order_drink, name='order_drink'),
     path('taste/<int:taste_id>/', views.show_category, name='cocks'),
     path('rules/', views.show_rules, name='rules'),
     path('wishlist/', views.show_wishlist, name='wishlist'),
@@ -16,4 +18,5 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('bill/<int:bill_id>/completed/', views.mark_completed, name='mark_completed'),
+    path('bill/<int:bill_id>/canceled/', views.mark_canceled, name='mark_canceled'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

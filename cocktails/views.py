@@ -1,11 +1,13 @@
 from datetime import datetime, date, timedelta
+from math import floor
+
 from forms import CreateForm
 from my_bar.settings import BAR_PRICE
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
-from cocktails.models import Cocktail, Ingridient, Client, Ingridient_Cost, Bill, Taste
+from cocktails.models import Cocktail, Ingridient, Client, Ingridient_Cost, Bill, Taste, Alcohol
 import sqlite3
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.admin.views.decorators import staff_member_required
@@ -76,12 +78,14 @@ def get_queryset(request):
     not_aval_set = get_available()
     cocks = Cocktail.objects.all().exclude(id__in=not_aval_set).order_by('name')
     tastes = Taste.objects.all()
+    alco = Alcohol.objects.all()
     client = Client.objects.get(user=request.user)
     context = {
         'cocks': cocks,
         'bills': bills,
         'tastes': tastes,
         'client': client,
+        'alco': alco,
     }
     return render(request, 'cocktails/index.html', context=context)
 
@@ -94,7 +98,9 @@ def refresh_cock(request):
         litres = 0
         final_perc = 0
         cursor.execute(
-            f"SELECT cocktails_ingridient_cost.id FROM cocktails_ingridient_cost JOIN cocktails_cocktail ON cocktails_ingridient_cost.cocktail_id_id=cocktails_cocktail.id WHERE cocktails_cocktail.name='{cock}'")
+            f"SELECT cocktails_ingridient_cost.id FROM cocktails_ingridient_cost "
+            f"JOIN cocktails_cocktail ON cocktails_ingridient_cost.cocktail_id_id=cocktails_cocktail.id "
+            f"WHERE cocktails_cocktail.name='{cock}'")
         ingridients_ids = cursor.fetchall()
         for i in ingridients_ids:
             ingridient_final = get_object_or_404(Ingridient_Cost, pk=i[0])
@@ -113,7 +119,9 @@ def get_available():
     connect = sqlite3.connect('db.sqlite3')
     cursor = connect.cursor()
     cursor.execute(
-        f"SELECT cocktails_ingridient_cost.cocktail_id_id FROM cocktails_ingridient_cost JOIN cocktails_ingridient ON cocktails_ingridient_cost.ingridient_id_id=cocktails_ingridient.id WHERE cocktails_ingridient.availability is False OR cocktails_ingridient_cost.value > cocktails_ingridient.count")
+        f"SELECT cocktails_ingridient_cost.cocktail_id_id FROM cocktails_ingridient_cost "
+        f"JOIN cocktails_ingridient ON cocktails_ingridient_cost.ingridient_id_id=cocktails_ingridient.id "
+        f"WHERE cocktails_ingridient.availability is False OR cocktails_ingridient_cost.value > cocktails_ingridient.count")
     not_aval_cocks = cursor.fetchall()
     connect.close()
     for cock in not_aval_cocks:
@@ -137,7 +145,6 @@ def show_category(request, taste_id):
 def show_cocktail(request, pk):
     bills = show_bills(request)
     cocktail = get_object_or_404(Cocktail, pk=pk)
-    form = CreateForm()
     ingr_list = []
 
     # Работа с базой
@@ -156,7 +163,6 @@ def show_cocktail(request, pk):
         'title': cocktail.name,
         'ingr_list': ingr_list,
         'bills': bills,
-        'form': form,
     }
 
     return render(request, 'cocktails/cocktail.html', context=context)
@@ -189,11 +195,13 @@ def show_alcohol(request, alcohol_id):
     not_aval_set = get_available()
     cocks = Cocktail.objects.all().exclude(id__in=not_aval_set).order_by('name').filter(alcohol_id=alcohol_id)
     client = Client.objects.get(user=request.user)
+    alco = Alcohol.objects.all()
     context = {
         'cocks': cocks,
         'alcohol_id': alcohol_id,
         'bills': bills,
         'client': client,
+        'alco': alco,
     }
     return render(request, 'cocktails/alcohol.html', context=context)
 
@@ -209,9 +217,9 @@ def order(request, cocktail_id):
         connect = sqlite3.connect('db.sqlite3')
         cursor = connect.cursor()
         sqlite_insert_query = f"""INSERT INTO cocktails_bill
-                              (timestamp, cock_name, client, cost, is_done)
+                              (timestamp, cock_name, client, cost, is_done, is_canceled)
                               VALUES
-                              ('{datetime.now()}', '{cock.name}', '{client.name}', {cock.cost}, False);"""
+                              ('{datetime.now()}', '{cock.name}', '{client.name}', {cock.cost}, False, False);"""
         client.balance -= cock.cost
         client.save()
 
@@ -224,6 +232,49 @@ def order(request, cocktail_id):
 def mark_completed(request, bill_id):
     bill = get_object_or_404(Bill, id=bill_id)
     bill.is_done = True
-    bill.save(update_fields=["is_done"])  # <-- гарантирует, что только это поле сохраняется
+    bill.save(update_fields=["is_done"])
     messages.success(request, f"Заказ '{bill.cock_name}' помечен как выполненный.")
     return redirect(request.META.get('HTTP_REFERER', 'index'))
+
+def mark_canceled(request, bill_id):
+    bill = get_object_or_404(Bill, id=bill_id)
+    bill.is_canceled = True
+    bill.save(update_fields=["is_canceled"])
+    client = get_object_or_404(Client, name=bill.client)
+    client.balance += bill.cost
+    client.save()
+    messages.success(request, f"Заказ '{bill.cock_name}' помечен как отмененный.")
+    return redirect(request.META.get('HTTP_REFERER', 'index'))
+
+def just_drink(request):
+    drinks = Ingridient.objects.filter(category__in=[1, 2]).filter(availability=True)
+    context = {
+        'drinks': drinks
+    }
+    return render(request, 'cocktails/just_drink.html', context)
+
+def order_drink(request):
+    if request.method == 'POST':
+        drink_id = request.POST.get("drink")
+        value = request.POST.get("value")
+        client = Client.objects.get(user=request.user)
+        drink = Ingridient.objects.get(id=drink_id)
+        cost = floor(drink.cost / 500 * int(value))
+
+        Ingridient.objects.filter(id=drink_id).update(count=drink.count - int(value))
+        if int(Ingridient.objects.get(id=drink_id).count) <= 0:
+            Ingridient.objects.filter(id=drink_id).update(availability=False)
+
+        connect = sqlite3.connect('db.sqlite3')
+        cursor = connect.cursor()
+        sqlite_insert_query = f"""INSERT INTO cocktails_bill
+                              (timestamp, cock_name, client, cost, is_done, is_canceled)
+                              VALUES
+                              ('{datetime.now()}', '{drink.name}', '{client.name}', {cost}, False, False);"""
+        client.balance -= cost
+        client.save()
+
+        cursor.execute(sqlite_insert_query)
+        connect.commit()
+        connect.close()
+    return redirect(f'http://127.0.0.1:8000')

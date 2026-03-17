@@ -14,9 +14,11 @@
             background-color: #121212;
             color: #e9e9e9;
         }
+
         a {
             color: #ffd700;
             text-decoration: none;
+            font-size: 18px;
         }
         a:hover {
             color: #fff;
@@ -26,14 +28,16 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px;
+            padding: 25px;
             background: #1a1a1a;
         }
+
         header h1 {
             margin: 0;
+            font-size: 28px;
+            color: #1a1a1a;
         }
 
-        /* Кнопка боковой панели */
         .openbtn {
             font-size: 18px;
             cursor: pointer;
@@ -48,7 +52,6 @@
             background-color: #333;
         }
 
-        /* Сайдбар */
         .sidepanel {
             height: 100%;
             width: 0;
@@ -59,7 +62,7 @@
             background-color: #1a1a1a;
             overflow-x: hidden;
             transition: 0.5s;
-            padding-top: 60px;
+            padding-top: 10px;
         }
         .sidepanel a, .sidepanel p {
             padding: 10px 20px;
@@ -77,26 +80,50 @@
             right: 20px;
             font-size: 36px;
         }
+
         .completed {
             color: #00ff66;
             font-weight: bold;
         }
         .pending {
-            color: #ff4444;
+            color: #ffd700;
+            font-weight: bold;
+        }
+        .canceled {
+            color: #fa2d11;
+            font-weight: bold;
         }
 
-        /* Адаптивность */
+        /* Сетка коктейлей */
+        .cocktail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            padding: 20px;
+        }
+
+        .cocktail-card {
+            background: #1e1e1e;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #000;
+        }
+
+        .cocktail-card h3 {
+            color: #ffd700;
+            margin: 0 0 10px 0;
+        }
+
+        .cost {
+            color: #ff5555;
+            font-weight: bold;
+        }
+
         @media (max-width: 768px) {
             .openbtn {
                 font-size: 16px;
                 padding: 8px 12px;
             }
-        }
-        .cock-title {
-            color: #ffd700;
-        }
-        .cost {
-            color: #FF0000;
         }
     </style>
 
@@ -111,73 +138,81 @@
 </head>
 <body>
 
-    <!-- 🔸 Шапка -->
-    <header style="display:flex; justify-content: space-between; align-items:center; padding:15px; background:#1a1a1a;">
+ <!-- 🔸 Шапка -->
+    <header>
         <h1>Бар "У Шлёппы"</h1>
-        <div>
-            <a href="/rules">Правила</a> |
-            <a href="/wishlist">Вишлист</a> |
+        <div class="nav-links">
+            <a href="/rules">Правила</a>
+            <a href="/wishlist">Вишлист</a>
             {% if user.is_authenticated %}
-                <span style="color:#ffd700;">Привет, {{ user.username }}!</span>
-                <a>У вас: {{ client.balance }}</a>
+                <span>Привет, {{ user.username }}!</span>
+                <span>💰 {{ client.balance }} ₽</span>
                 <a href="{% url 'logout' %}">Выйти</a>
+                <a href="{% url 'just_drink' %}">Просто налей</a>
             {% else %}
-                <a href="{% url 'login' %}">Войти</a> |
+                <a href="{% url 'login' %}">Войти</a>
                 <a href="{% url 'register' %}">Регистрация</a>
             {% endif %}
             {% if user.is_staff or user.is_superuser %}
-            <a href="/admin">Admin</a> |
-            <a href="/refresh">Refresh</a>
+                <a href="/admin">Admin</a>
+                <a href="/refresh">Refresh</a>
             {% endif %}
         </div>
     </header>
 
-    <!-- 🔸 Контент -->
-    {% block content %}
-    {% endblock %}
-    <section style="padding:20px;">
-    <!-- Сетка коктейлей -->
-    <div class="cocktail-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:15px;">
-        {% for i in cocks %}
-        <div class="cocktail-card" style="background:#1e1e1e; padding:15px; border-radius:10px; box-shadow:0 0 10px #000;">
-            <h3 class="cock-title">{{ i }}</h3>
-            <ul>
-                <li>Вкус: {{ i.taste }}</li>
-                <li>Бокал: {{ i.group }}</li>
-                <li>Крепость: {{ i.alcohol }} ({{ i.alcohol_perc }}°)</li>
-                <li class="cost">Стоимость: <b class="cost">{{ i.cost }}</b></li>
-            </ul>
-            <a class="openbtn" href="{% url 'cocktail' i.pk %}">Подробнее</a>
-        </div>
+<!-- 🔸 Контент -->
+{% block content %}{% endblock %}
+
+<!-- 🔸 Сетка коктейлей (если передан cocks) -->
+{% if cocks %}
+<div class="cocktail-grid">
+    {% for i in cocks %}
+    <div class="cocktail-card">
+        <h3>{{ i.name }}</h3>
+        <ul>
+            <li>Вкус: {{ i.taste }}</li>
+            <li>Бокал: {{ i.group }}</li>
+            <li>Крепость: {{ i.alcohol }} ({{ i.alcohol_perc }}°)</li>
+            <li class="cost">Стоимость: {{ i.cost }} RSD</li>
+        </ul>
+        <a class="openbtn" href="{% url 'cocktail' i.id %}">Подробнее</a>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- 🔸 Боковая панель заказов -->
+{% if user.is_authenticated %}
+<div id="mySidepanel" class="sidepanel">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <h2 style="padding-left:20px;">Заказы</h2>
+    <div id="items" style="padding-left:20px;">
+        {% for bill in bills %}
+            <p>
+                {{ bill.cock_name }} — {{ bill.cost }} ₽<br>
+                {{ bill.timestamp|date:"H:i" }} — {{ bill.client }}
+                {% if bill.is_done %}
+                    <span class="completed">✅ Выполнен</span>
+                {% elif bill.is_canceled %}
+                    <span class="canceled">⛔️ Отменен</span>
+                {% else %}
+                    <span class="pending">🕒 В процессе</span>
+                    {% if user.is_staff %}
+                        <a href="{% url 'mark_completed' bill.id %}" style="color:#23e615; margin-left:10px;">Отметить выполненым</a>
+                    {% endif %}
+                    <a href="{% url 'mark_canceled' bill.id %}" style="color:#fa2d11; margin-left:10px;">Отменить</a>
+                {% endif %}
+            </p>
+            <hr style="border-color:#333;">
         {% endfor %}
     </div>
+</div>
 
-    <!-- 🔸 Боковая панель заказов -->
-    {% if user.is_authenticated %}
-    <div id="mySidepanel" class="sidepanel">
-        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-        <h2 style="padding-left:20px;">Заказы</h2>
-        <div id="items" style="padding-left:20px;">
-            {% for bill in bills %}
-                <p>
-                    {{ bill.cock_name }} — {{ bill.cost }} ₽ <br>
-                    {{ bill.timestamp|date:"H:i" }} — {{ bill.client }}
-                    {% if bill.is_done %}
-                        <span style="color:#00ff66;">✅ Выполнен</span>
-                    {% else %}
-                        <span style="color:#ffcc00;">🕒 В процессе</span>
-                        {% if user.is_staff %}
-                            <a href="{% url 'mark_completed' bill.id %}" style="color:#ffd700; margin-left:10px;">Отметить выполненым</a>
-                        {% endif %}
-                    {% endif %}
-                </p>
-                <hr style="border-color:#333;">
-            {% endfor %}
-        </div>
-    </div>
+<!-- Кнопка открытия панели сверху -->
+<button class="openbtn" onclick="openNav()" style="position:fixed; top:20px; left:20px; z-index:1001;">
+    &#9776; Заказы
+</button>
+{% endif %}
 
-    <button class="openbtn" onclick="openNav()" style="position:fixed; bottom:20px; left:20px;">&#9776; Заказы</button>
-    {% endif %}
-</section>
 </body>
 </html>
