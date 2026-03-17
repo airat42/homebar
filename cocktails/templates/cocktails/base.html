@@ -147,8 +147,8 @@
             {% if user.is_authenticated %}
                 <span>Привет, {{ user.username }}!</span>
                 <span>💰 {{ client.balance }} ₽</span>
-                <a href="{% url 'logout' %}">Выйти</a>
                 <a href="{% url 'just_drink' %}">Просто налей</a>
+                <a href="{% url 'logout' %}" style="color:#fa2d11;">Выйти</a>
             {% else %}
                 <a href="{% url 'login' %}">Войти</a>
                 <a href="{% url 'register' %}">Регистрация</a>

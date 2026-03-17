@@ -75,6 +75,8 @@ class Bill(models.Model):
     client = models.CharField(max_length=20, default='anon')
     is_done = models.BooleanField(default=False)
     is_canceled = models.BooleanField(default=False)
+    is_cock = models.BooleanField(default=True)
+    value = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
         return f"{self.cock_name} — {self.client} ({'✅' if self.is_done else '🕒'})"
