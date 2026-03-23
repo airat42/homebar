@@ -19,9 +19,15 @@
             color: #ffd700;
             text-decoration: none;
             font-size: 18px;
+
         }
         a:hover {
             color: #fff;
+        }
+
+        .icon {
+            color: #fff;
+            margin-left: 10%;
         }
 
         header {
@@ -52,13 +58,32 @@
             background-color: #333;
         }
 
+        .orderbutton {
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            background-color: #ffd700;
+            color: #1a1a1a;
+            width: 100px;
+            padding: 10px 15px;
+            border: 2px solid #1a1a1a;
+            border-radius: 8px;
+            transition: 0.3s;
+            right: 20px;
+            opacity: 0.75;
+        }
+        .orderbutton:hover {
+            background-color: #333;
+            color: #ffd700;
+        }
+
         .sidepanel {
             height: 100%;
             width: 0;
             position: fixed;
             z-index: 1000;
             top: 0;
-            left: 0;
+            right: 0;
             background-color: #1a1a1a;
             overflow-x: hidden;
             transition: 0.5s;
@@ -119,6 +144,10 @@
             font-weight: bold;
         }
 
+        .nav-links {
+            right: 10px;
+        }
+
         @media (max-width: 768px) {
             .openbtn {
                 font-size: 16px;
@@ -130,9 +159,15 @@
     <script>
         function openNav() {
             document.getElementById("mySidepanel").style.width = "300px";
+            document.getElementById("OrderButton").style.opacity = "0";
+            document.getElementById("OrderButton").style.width = "0px";
+            document.getElementById("OrderButton").style.right = "0px";
         }
         function closeNav() {
             document.getElementById("mySidepanel").style.width = "0";
+            document.getElementById("OrderButton").style.opacity = "0.75";
+            document.getElementById("OrderButton").style.width = "100px";
+            document.getElementById("OrderButton").style.right = "20px";
         }
     </script>
 </head>
@@ -140,13 +175,13 @@
 
  <!-- 🔸 Шапка -->
     <header>
-        <h1>Бар "У Шлёппы"</h1>
+
         <div class="nav-links">
             <a href="/rules">Правила</a>
             <a href="/wishlist">Вишлист</a>
             {% if user.is_authenticated %}
                 <span>Привет, {{ user.username }}!</span>
-                <span>💰 {{ client.balance }} ₽</span>
+                <span>💰 {{ client.balance }} RSD</span>
                 <a href="{% url 'just_drink' %}">Просто налей</a>
                 <a href="{% url 'logout' %}" style="color:#fa2d11;">Выйти</a>
             {% else %}
@@ -156,6 +191,7 @@
             {% if user.is_staff or user.is_superuser %}
                 <a href="/admin">Admin</a>
                 <a href="/refresh">Refresh</a>
+                <a href="/qr">QR</a>
             {% endif %}
         </div>
     </header>
@@ -189,7 +225,7 @@
     <div id="items" style="padding-left:20px;">
         {% for bill in bills %}
             <p>
-                {{ bill.cock_name }} — {{ bill.cost }} ₽<br>
+                {{ bill.cock_name }} — {{ bill.cost }} RSD<br>
                 {{ bill.timestamp|date:"H:i" }} — {{ bill.client }}
                 {% if bill.is_done %}
                     <span class="completed">✅ Выполнен</span>
@@ -209,7 +245,7 @@
 </div>
 
 <!-- Кнопка открытия панели сверху -->
-<button class="openbtn" onclick="openNav()" style="position:fixed; top:20px; left:20px; z-index:1001;">
+<button id="OrderButton" class="orderbutton" onclick="openNav()" style="position:fixed; bottom:20px; z-index:1001;">
     &#9776; Заказы
 </button>
 {% endif %}

@@ -1,4 +1,4 @@
-{% extends 'cocktails/main.html' %}
+{% extends 'cocktails/base.html' %}
 {% load widget_tweaks %}
 {% block title %}{{ cocktail.name }}{% endblock %}
 
@@ -48,6 +48,12 @@
         <p>Проверьте его наличие в окне "Заказы"</p>
     </div>
 </div>
+
+<style>
+    .orderbutton {
+            opacity: 0.4;
+        }
+</style>
 
 <script>
 const modal = document.getElementById('myModal');

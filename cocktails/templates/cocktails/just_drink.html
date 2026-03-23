@@ -1,7 +1,8 @@
-{% extends 'cocktails/main.html' %}
+{% extends 'cocktails/base.html' %}
 {% block title %}Налей, братуха{% endblock %}
 
 {% block content %}
+<a href="{% url 'index' %}" style="color:#ffd700;">&#8592; На главную</a>
 <div class="form-container">
     <h2>Выбор напитка</h2>
 

@@ -28,7 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-BAR_PRICE = 1.75
+BAR_PRICE = 1.6
 
 # Application definition
 

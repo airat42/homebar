@@ -1,0 +1,10 @@
+{% extends 'cocktails/base.html' %}
+{% block title %}Куриный код{% endblock %}
+
+{% block content %}
+<a href="{% url 'index' %}" style="color:#ffd700;">&#8592; На главную</a>
+<hr>
+<a>{{ host }}</a>
+<hr>
+<img src="http://127.0.0.1:8000/media/qr/qrcode.png"/>
+{% endblock %}
