@@ -1,22 +1,43 @@
 {% extends 'cocktails/base.html' %}
 {% block title %}Карта бара{% endblock %}
-<style>
-    .category-link {
-            margin: 60px;
-        }
-</style>
+
 {% block content %}
-    <div class="categories">
-        <strong>Вкусы:</strong>
-        {% for taste in tastes %}
-            <a href="/taste/{{ taste.pk }}" class="category-link" style="padding:10px">{{ taste }}</a>
-        {% endfor %}
-    </div>
-    <div>
-        <strong>Крепость:</strong>
-        {% for al in alco %}
-            <a href="/alcohol/{{ al.pk }}" class="category-link" style="padding:10px;">{{ al }}</a>
-        {% endfor %}
-    </div>
-</section>
+    <style>
+        .search-btn {
+            background-color: #ffd700;
+            font-size: 18px;
+            border-radius: 5px;
+            font-weight: bold;
+            height: 35px;
+        }
+        .custom-input {
+            font-size: 18px;
+        }
+    </style>
+    <form action="{% url 'index' %}" method="get">
+
+        <!-- Селектор -->
+        <select name="taste_id" id="taste_id" class="custom-input">
+            <option value="">Вкус</option>
+            {% for taste in tastes %}
+                <option value="{{ taste.id }}">{{ taste.name }}</option>
+            {% endfor %}
+        </select>
+        <select name="alco_id" id="alco_id" class="custom-input">
+            <option value="">Крепость</option>
+            {% for alc in alco %}
+                <option value="{{ alc.id }}">{{ alc.name }}</option>
+            {% endfor %}
+        </select>
+        <select name="group_id" id="group_id" class="custom-input">
+            <option value="">Тип</option>
+            {% for group in groups %}
+                <option value="{{ group.id }}">{{ group.name }}</option>
+            {% endfor %}
+        </select>
+        <hr>
+        <button type="submit" class="search-btn">Поиск/сброс</button>
+    </form>
+
+<a>{{ text }}</a>
 {% endblock %}

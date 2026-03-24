@@ -1,7 +1,7 @@
 from datetime import date, timedelta
 import socket, qrcode, psutil
 from my_bar.settings import BAR_PRICE
-from cocktails.models import Cocktail, Ingridient, Client, Ingridient_Cost, Bill, Taste, Alcohol
+from cocktails.models import Cocktail, Ingridient, Client, Ingridient_Cost, Bill, Taste, Alcohol, Group
 import sqlite3
 from django.shortcuts import get_object_or_404, redirect, render
 
@@ -10,16 +10,30 @@ def get_index(request):
         return redirect('login')
     bills = show_bills(request)
     not_aval_set = get_available()
-    cocks = Cocktail.objects.all().exclude(id__in=not_aval_set).order_by('name')
     tastes = Taste.objects.all()
     alco = Alcohol.objects.all()
+    groups = Group.objects.all()
     client = Client.objects.get(user=request.user)
+    cocks = Cocktail.objects.all().exclude(id__in=not_aval_set).order_by('name')
+    text = 'Ваш фильтр: '
+    if request.method == 'GET':
+        if request.GET.get('taste_id'):
+            cocks = cocks.filter(taste_id=request.GET.get('taste_id'))
+            text += str(Taste.objects.filter(id=request.GET.get('taste_id'))[0]) + ' '
+        if request.GET.get('alco_id'):
+            cocks = cocks.filter(alcohol_id=request.GET.get('alco_id'))
+            text += str(Alcohol.objects.filter(id=request.GET.get('alco_id'))[0]) + ' '
+        if request.GET.get('group_id'):
+            cocks = cocks.filter(group_id=request.GET.get('group_id'))
+            text += str(Group.objects.filter(id=request.GET.get('group_id'))[0])
     context = {
         'cocks': cocks,
         'bills': bills,
         'tastes': tastes,
         'client': client,
         'alco': alco,
+        'groups': groups,
+        'text': text,
     }
     return render(request, 'cocktails/index.html', context=context)
 
@@ -61,19 +75,6 @@ def get_available():
         not_aval.append(cock[0])
     not_aval_set = set(not_aval)
     return not_aval_set
-
-def show_category(request, taste_id):
-    bills = show_bills(request)
-    not_aval_set = get_available()
-    cocks = Cocktail.objects.all().exclude(id__in=not_aval_set).filter(taste_id=taste_id).order_by('name')
-    client = Client.objects.get(user=request.user)
-    context = {
-        'cocks': cocks,
-        'taste_id': taste_id,
-        'bills': bills,
-        'client': client,
-    }
-    return render(request, 'cocktails/taste.html', context=context)
 
 def show_cocktail(request, pk):
     bills = show_bills(request)
@@ -129,21 +130,6 @@ def show_wishlist(request):
         'bills': bills,
     }
     return render(request, 'cocktails/wishlist.html', context=context)
-
-def show_alcohol(request, alcohol_id):
-    bills = show_bills(request)
-    not_aval_set = get_available()
-    cocks = Cocktail.objects.all().exclude(id__in=not_aval_set).order_by('name').filter(alcohol_id=alcohol_id)
-    client = Client.objects.get(user=request.user)
-    alco = Alcohol.objects.all()
-    context = {
-        'cocks': cocks,
-        'alcohol_id': alcohol_id,
-        'bills': bills,
-        'client': client,
-        'alco': alco,
-    }
-    return render(request, 'cocktails/alcohol.html', context=context)
 
 def get_qr(request):
     bills = show_bills(request)

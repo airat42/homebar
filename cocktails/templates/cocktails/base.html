@@ -148,6 +148,10 @@
             right: 10px;
         }
 
+        .nlinks {
+            margin-right: 3%;
+        }
+
         @media (max-width: 768px) {
             .openbtn {
                 font-size: 16px;
@@ -177,21 +181,21 @@
     <header>
 
         <div class="nav-links">
-            <a href="/rules">Правила</a>
-            <a href="/wishlist">Вишлист</a>
+            <a class="nlinks" href="/rules">Правила</a>
+            <a class="nlinks" href="/wishlist">Вишлист</a>
             {% if user.is_authenticated %}
-                <span>Привет, {{ user.username }}!</span>
-                <span>💰 {{ client.balance }} RSD</span>
-                <a href="{% url 'just_drink' %}">Просто налей</a>
-                <a href="{% url 'logout' %}" style="color:#fa2d11;">Выйти</a>
+                <span class="nlinks">Привет, {{ user.username }}!</span>
+                <span class="nlinks">💰 {{ client.balance }} RSD</span>
+                <a class="nlinks" href="{% url 'just_drink' %}">Просто налей</a>
+                <a class="nlinks" href="{% url 'logout' %}" style="color:#fa2d11;">Выйти</a>
             {% else %}
-                <a href="{% url 'login' %}">Войти</a>
-                <a href="{% url 'register' %}">Регистрация</a>
+                <a class="nlinks" href="{% url 'login' %}">Войти</a>
+                <a class="nlinks" href="{% url 'register' %}">Регистрация</a>
             {% endif %}
             {% if user.is_staff or user.is_superuser %}
-                <a href="/admin">Admin</a>
-                <a href="/refresh">Refresh</a>
-                <a href="/qr">QR</a>
+                <a class="nlinks" href="/admin">Admin</a>
+                <a class="nlinks" href="/refresh">Refresh</a>
+                <a class="nlinks" href="/qr">QR</a>
             {% endif %}
         </div>
     </header>

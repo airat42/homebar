@@ -14,7 +14,7 @@
                 <li>Тип: {{ cocktail.group }}</li>
                 <li>Крепость: {{ cocktail.alcohol }} ({{cocktail.alcohol_perc}}°)</li>
                 <li>Стоимость: <b>{{ cocktail.cost }} RSD</b></li>
-                <li>Состав:
+                <li style="color: #ffd700;">Состав:
                     <ul>
                         {% for i in ingr_list %}
                             <li>{{ i.ingridient_id}}: {{ i.value }}</li>
@@ -53,6 +53,10 @@
     .orderbutton {
             opacity: 0.4;
         }
+
+    li {
+        margin-bottom: 8px;
+    }
 </style>
 
 <script>
